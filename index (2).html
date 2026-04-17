@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Baccarat DG AI VIP PRO MAX++</title>
+
+<style>
+body{
+    background:#0f172a;
+    color:#fff;
+    font-family:Arial;
+    text-align:center;
+}
+.container{max-width:1000px;margin:auto;}
+
+button{
+    padding:10px 15px;
+    margin:5px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.player{background:#3b82f6;}
+.banker{background:#ef4444;}
+.tie{background:#22c55e;}
+.predictBtn{background:#f59e0b;}
+
+.history{
+    display:flex;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
+
+.box{
+    width:25px;height:25px;margin:2px;border-radius:50%;
+}
+
+.P{background:#3b82f6;}
+.B{background:#ef4444;}
+.T{background:#22c55e;}
+
+.result{
+    margin-top:10px;
+    font-size:18px;
+}
+
+.alert{
+    color:yellow;
+    font-weight:bold;
+    font-size:20px;
+}
+
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>🔥 BACCARAT DG LTA.06 🔥</h1>
+
+<input type="file" id="upload"><br><br>
+
+<button class="player" onclick="add('P')">Player</button>
+<button class="banker" onclick="add('B')">Banker</button>
+<button class="tie" onclick="add('T')">Tie</button>
+<button onclick="reset()">Reset</button>
+<br>
+<button class="predictBtn" onclick="predict()">🎯 DỰ ĐOÁN</button>
+
+<div class="result" id="predict"></div>
+<div class="result" id="percent"></div>
+<div class="result" id="pattern"></div>
+<div class="result" id="strength"></div>
+<div class="result" id="alert"></div>
+
+<h3>Lịch sử</h3>
+<div class="history" id="history"></div>
+
+</div>
+
+<script>
+let data=[];
+
+// ===== BASIC =====
+function add(x){
+    data.push(x);
+    render();
+}
+function reset(){
+    data=[];
+    render();
+    clearText();
+}
+function render(){
+    let html="";
+    data.forEach(v=>{
+        html+=`<div class="box ${v}"></div>`;
+    });
+    document.getElementById("history").innerHTML=html;
+}
+function clearText(){
+    ["predict","percent","pattern","strength","alert"]
+    .forEach(id=>document.getElementById(id).innerHTML="");
+}
+
+// ===== CORE AI VIP =====
+function predict(){
+    if(data.length<5){
+        alert("Chưa đủ dữ liệu");
+        return;
+    }
+
+    let streaks = getStreaks();
+
+    let pattern = detectPatternVIP(streaks);
+    let trend = detectTrend(streaks);
+    let breakLv = detectBreak(streaks);
+    let strength = calcStrength(streaks);
+
+    let percent = calcPercent(streaks, strength, breakLv);
+    let side = sideBet();
+
+    document.getElementById("predict").innerHTML =
+        "🎯 Dự đoán: "+trend+" | Phụ: "+side;
+
+    document.getElementById("percent").innerHTML =
+        "📊 Win %: "+percent+"%";
+
+    document.getElementById("pattern").innerHTML =
+        "📈 Cầu: "+pattern+" | Bẻ: "+breakLv;
+
+    document.getElementById("strength").innerHTML =
+        "💪 Độ mạnh: "+strength;
+
+    if(percent>80 && strength=="MẠNH"){
+        document.getElementById("alert").innerHTML =
+        "⚠️ ALL IN (Cầu cực đẹp)";
+    }else{
+        document.getElementById("alert").innerHTML="";
+    }
+}
+
+// ===== STREAK =====
+function getStreaks(){
+    let s=[],count=1;
+
+    for(let i=1;i<data.length;i++){
+        if(data[i]==data[i-1]) count++;
+        else{
+            s.push({side:data[i-1],len:count});
+            count=1;
+        }
+    }
+    s.push({side:data[data.length-1],len:count});
+    return s;
+}
+
+// ===== CẦU VIP =====
+function detectPatternVIP(streaks){
+    let arr = streaks.map(s=>s.len).slice(-7);
+    let str = arr.join("-");
+
+    if(str.includes("1-1-1-1")) return "1-1";
+    if(str.includes("2-2-2")) return "2-2";
+    if(str.includes("3-3")) return "3-3";
+    if(str.includes("4-4")) return "4-4";
+    if(str.includes("1-2-3")) return "1-2-3";
+    if(str.includes("3-2-1")) return "3-2-1";
+    if(str.includes("1-2-3-4-3-2-1")) return "Kim Tự Tháp";
+
+    let last = streaks[streaks.length-1];
+    if(last.len>=3){
+        return last.side=="P" ? "Bệt Player" : "Bệt Banker";
+    }
+
+    return "Ngẫu nhiên";
+}
+
+// ===== TREND =====
+function detectTrend(streaks){
+    let last = streaks.slice(-3);
+    let p=0,b=0;
+
+    last.forEach(s=>{
+        if(s.side=="P") p+=s.len;
+        else b+=s.len;
+    });
+
+    return p>=b ? "PLAYER" : "BANKER";
+}
+
+// ===== BẺ =====
+function detectBreak(streaks){
+    let last = streaks[streaks.length-1];
+    let prev = streaks[streaks.length-2];
+
+    if(!prev) return "Không";
+
+    if(last.side !== prev.side){
+        if(prev.len>=4) return "Bẻ mạnh";
+        if(prev.len>=2) return "Bẻ vừa";
+        return "Bẻ nhẹ";
+    }
+    return "Không bẻ";
+}
+
+// ===== ĐỘ MẠNH =====
+function calcStrength(streaks){
+    let last = streaks.slice(-3);
+    let maxLen = Math.max(...last.map(s=>s.len));
+
+    if(maxLen>=4) return "MẠNH";
+    if(maxLen>=2) return "VỪA";
+    return "NHẸ";
+}
+
+// ===== % =====
+function calcPercent(streaks, strength, breakLv){
+    let last = streaks[streaks.length-1];
+    let base = 55 + last.len*3;
+
+    if(strength=="MẠNH") base+=10;
+    if(strength=="NHẸ") base-=5;
+
+    if(breakLv=="Bẻ mạnh") base-=10;
+
+    return Math.min(95, Math.max(45, base));
+}
+
+// ===== KÈO PHỤ =====
+function sideBet(){
+    let arr=[
+        "Player Đôi",
+        "Banker Đôi",
+        "Tie",
+        "Long Bảo Player",
+        "Long Bảo Banker",
+        "Không"
+    ];
+    return arr[Math.floor(Math.random()*arr.length)];
+}
+
+// ===== UPLOAD =====
+document.getElementById("upload").addEventListener("change",()=>{
+    alert("🤖 AI đang đọc ảnh (giả lập)...");
+});
+</script>
+
+</body>
+</html>
